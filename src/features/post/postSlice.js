@@ -53,6 +53,12 @@ const slice = createSlice({
       });
       state.totalPosts = count;
     },
+    sendPostReactionSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { postId, reactions } = action.payload;
+      state.postsById[postId].reactions = reactions;
+    },
   },
 });
 // Doc cai nay ki hon ti de coi cach lam middleware
@@ -78,6 +84,28 @@ export const getPosts =
         params,
       });
       dispatch(slice.actions.getPostsSuccess(response.data));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+    }
+  };
+
+export const sendPostReaction =
+  ({ postId, emoji }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      console.log(postId, emoji);
+      const response = await apiService.post(`/reactions`, {
+        targetType: "Post",
+        targetId: postId,
+        emoji,
+      });
+      dispatch(
+        slice.actions.sendPostReactionSuccess({
+          postId,
+          reactions: response.data,
+        })
+      );
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }

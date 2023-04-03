@@ -1,7 +1,7 @@
-import { format, getTime, formatDistanceToNow } from "data-fns";
+import { format, getTime, formatDistanceToNow } from "date-fns";
 
 // Dung de format thoi gian khi su dung cac function duoi day
-export function fData(date) {
+export function fDate(date) {
   return format(new Date(date), "dd MMMM yyyy");
 }
 
