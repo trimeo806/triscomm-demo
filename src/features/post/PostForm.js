@@ -26,10 +26,12 @@ function PostForm() {
   const {
     handleSubmit,
     reset,
+    // setValue note để dùng
     setValue,
     formState: { isSubmitting },
   } = methods;
   const dispatch = useDispatch();
+
   const handleDrop = useCallback(
     (acceptedFiles) => {
       const file = acceptedFiles[0];
@@ -38,6 +40,7 @@ function PostForm() {
         setValue(
           "image",
           Object.assign(file, {
+            // Cho xem trước review
             preview: URL.createObjectURL(file),
           })
         );
@@ -48,7 +51,17 @@ function PostForm() {
 
   const onSubmit = (data) => {
     dispatch(createPost(data)).then(() => reset());
+    // console.log(data);
   };
+
+  // const fileInput = useRef();
+  // const handleFile = (e) => {
+  //   const file = fileInput.current.files[0];
+  //   if (file) {
+  //     setValue("image", file);
+  //   }
+  // };
+
   return (
     <Card sx={{ p: 3 }}>
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
@@ -66,7 +79,7 @@ function PostForm() {
               },
             }}
           />
-          <FTextField
+          {/* <FTextField
             name="image"
             multiline
             fullWidth
@@ -78,14 +91,15 @@ function PostForm() {
                 borderColor: alpha("#919EAB", 0.32),
               },
             }}
-          />
+          /> */}
 
-          {/* <FUploadImage
+          <FUploadImage
             name="image"
             accept="image/*"
             maxSize={3145728}
             onDrop={handleDrop}
-          /> */}
+          />
+          {/* <input type="file" ref={fileInput} onChange={handleFile}></input> */}
 
           <Box
             sx={{

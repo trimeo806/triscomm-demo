@@ -17,6 +17,7 @@ function PostList({ userId }) {
     if (userId) {
       dispatch(getPosts({ userId, page }));
     }
+    console.log(userId);
   }, [userId, page, dispatch]);
 
   return (

@@ -24,6 +24,7 @@ function CommentList({ postId }) {
       isLoading: state.comment.isLoading,
     }),
     // Select data kieu nay nen dung them shallowEqual. Vay shallowEqual la gi?
+    // Shallow equal dung
     shallowEqual
   );
   const totalPages = Math.ceil(totalComments / COMMENTS_PER_POST);

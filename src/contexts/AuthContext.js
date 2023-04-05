@@ -43,6 +43,44 @@ const reducer = (state, action) => {
         isAuthenticated,
         user,
       };
+    case UPDATE_PROFILE:
+      const {
+        name,
+        avatarUrl,
+        coverUrl,
+        aboutMe,
+        city,
+        country,
+        company,
+        jobTitle,
+        facebookLink,
+        instagramLink,
+        linkedinLink,
+        twitterLink,
+        friendCount,
+        postCount,
+      } = action.payload;
+      // Ở đây do k có redux toolkit nên phải copy bằng cách destructure nó ra và đổ dữ liệu vào
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          name,
+          avatarUrl,
+          coverUrl,
+          aboutMe,
+          city,
+          country,
+          company,
+          jobTitle,
+          facebookLink,
+          instagramLink,
+          linkedinLink,
+          twitterLink,
+          friendCount,
+          postCount,
+        },
+      };
     default:
       return state;
   }
@@ -62,6 +100,15 @@ const AuthContext = createContext({ ...initialState });
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  // Trong đây có thể truy cập được store.
+  const updatedProfile = useSelector((state) => state.user.updatedProfile);
+  // Khi có updated profile thì nó sẽ dispatch action UPDATE_PROFILE và update cái updatedProfile (trong store)
+  useEffect(() => {
+    if (updatedProfile) {
+      dispatch({ type: UPDATE_PROFILE, payload: updatedProfile });
+    }
+  }, [updatedProfile]);
+
   useEffect(() => {
     const initialize = async () => {
       try {

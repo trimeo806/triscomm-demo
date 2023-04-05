@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import apiService from "../../app/apiService";
 import { POST_PER_PAGE } from "../../app/config";
+import { cloudinaryUpload } from "../../utils/cloudinary";
 
 const initialState = {
   isLoading: false,
@@ -59,6 +60,11 @@ const slice = createSlice({
       const { postId, reactions } = action.payload;
       state.postsById[postId].reactions = reactions;
     },
+    // Them action resetPost de khi user chuyen sang page cua user khac thi no se reset lai post
+    resetPosts(state, action) {
+      state.postsById = {};
+      state.currentPagePosts = [];
+    },
   },
 });
 // Doc cai nay ki hon ti de coi cach lam middleware
@@ -67,7 +73,13 @@ export const createPost =
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const response = await apiService.post("/posts", { content, image });
+      // upload image to cloudinary
+      const imageUrl = await cloudinaryUpload(image);
+      // Upload data to server
+      const response = await apiService.post("/posts", {
+        content,
+        image: imageUrl,
+      });
       dispatch(slice.actions.createPostSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
@@ -83,6 +95,9 @@ export const getPosts =
       const response = await apiService.get(`/posts/user/${userId}`, {
         params,
       });
+      if (page === 1) {
+        dispatch(slice.actions.resetPosts());
+      }
       dispatch(slice.actions.getPostsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
