@@ -17,13 +17,25 @@ function PostList({ userId }) {
     if (userId) {
       dispatch(getPosts({ userId, page }));
     }
-    console.log(userId);
   }, [userId, page, dispatch]);
+
+  const [openEditPostFormModal, setOpenEditPostFormModal] =
+    React.useState(false);
+  const handleOpenEditPostFormModal = () => setOpenEditPostFormModal(true);
+  const handleCloseEditPostFormModal = () => setOpenEditPostFormModal(false);
 
   return (
     <div>
       {posts?.map((post) => (
-        <PostCard key={post._id} post={post} />
+        <PostCard
+          key={post._id}
+          post={post}
+          openEditPostFormModal={openEditPostFormModal}
+          handleOpenEditPostFormModal={handleOpenEditPostFormModal}
+          handleCloseEditPostFormModal={handleCloseEditPostFormModal}
+          page={page}
+          userId={userId}
+        />
       ))}
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         {totalPosts ? (

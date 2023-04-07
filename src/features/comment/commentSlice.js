@@ -52,6 +52,19 @@ const slice = createSlice({
       const { commentId, reactions } = action.payload;
       state.commentsById[commentId].reactions = reactions;
     },
+    deleteCommentSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { postId, commentId } = action.payload;
+      state.commentsByPost[postId] = state.commentsByPost[postId].filter(
+        (comment) => comment !== commentId
+      );
+      // state.totalCommentsByPost[postId] -= 1;
+      // state.commentsByPost = {
+      //   ...state.commentsByPost,
+      //   postId: state.commentsByPost[postId],
+      // };
+    },
   },
 });
 
@@ -111,6 +124,19 @@ export const sendCommentReaction =
           reactions: response.data,
         })
       );
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+    }
+  };
+
+export const deleteComment =
+  ({ commentId, postId }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      await apiService.delete(`/comments/${commentId}`);
+      dispatch(slice.actions.deleteCommentSuccess({ commentId, postId }));
+      dispatch(getComments({ postId }));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }

@@ -65,6 +65,21 @@ const slice = createSlice({
       state.postsById = {};
       state.currentPagePosts = [];
     },
+    editPostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      const { postId } = action.payload;
+      const { content, image } = action.payload.data;
+      state.postsById[postId].content = content;
+      state.postsById[postId].image = image;
+    },
+    deletePostSuccess(state, action) {
+      state.isLoading = false;
+      state.error = null;
+      state.currentPagePosts = state.currentPagePosts.filter(
+        (postId) => postId !== action.payload
+      );
+    },
   },
 });
 // Doc cai nay ki hon ti de coi cach lam middleware
@@ -109,7 +124,6 @@ export const sendPostReaction =
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      console.log(postId, emoji);
       const response = await apiService.post(`/reactions`, {
         targetType: "Post",
         targetId: postId,
@@ -121,6 +135,36 @@ export const sendPostReaction =
           reactions: response.data,
         })
       );
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+    }
+  };
+
+export const editPost =
+  ({ data, postId }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      const { content, image } = data;
+      const imageUrl = await cloudinaryUpload(image);
+      const response = await apiService.put(`/posts/${postId}`, {
+        content,
+        image: imageUrl,
+      });
+      dispatch(slice.actions.editPostSuccess({ data: response.data, postId }));
+    } catch (error) {
+      dispatch(slice.actions.hasError(error.message));
+    }
+  };
+
+export const deletePost =
+  ({ postId, userId, page }) =>
+  async (dispatch) => {
+    dispatch(slice.actions.startLoading());
+    try {
+      await apiService.delete(`/posts/${postId}`);
+      dispatch(slice.actions.deletePostSuccess(postId));
+      dispatch(getPosts({ postId, userId, page }));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
     }
