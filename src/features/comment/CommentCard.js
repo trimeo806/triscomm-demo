@@ -3,6 +3,7 @@ import {
   Avatar,
   Box,
   Button,
+  IconButton,
   Modal,
   Paper,
   Stack,
@@ -13,6 +14,7 @@ import CommentReaction from "./CommentReaction";
 import { useDispatch } from "react-redux";
 import { deleteComment } from "./commentSlice";
 import useAuth from "../../hooks/useAuth";
+import DeleteIcon from "@mui/icons-material/Delete";
 
 const style = {
   position: "absolute",
@@ -54,12 +56,12 @@ function CommentCard({ comment, postId }) {
             {fDate(comment.createdAt)}
           </Typography>
 
-          <Button
+          <IconButton
             disabled={user._id === comment.author._id ? false : true}
             onClick={() => handleOpenDeleteCommentModal()}
           >
-            Delete
-          </Button>
+            <DeleteIcon />
+          </IconButton>
           <Modal
             aria-labelledby="transition-modal-title"
             aria-describedby="transition-modal-description"

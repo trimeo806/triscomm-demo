@@ -78,20 +78,11 @@ function ThemeProvider({ children }) {
   // Customize cac components thong qua function duoi day
   theme.components = customizeComponents(theme);
 
-  const darkTheme = createTheme({
-    palette: {
-      mode: "dark",
-    },
-  });
-
   return (
-    <ThemeProvider theme={darkTheme}>
+    <MUIThemeProvider theme={theme}>
       <CssBaseline />
-      <MUIThemeProvider theme={theme}>
-        <CssBaseline></CssBaseline>
-        {children}
-      </MUIThemeProvider>{" "}
-    </ThemeProvider>
+      {children}
+    </MUIThemeProvider>
   );
 }
 
