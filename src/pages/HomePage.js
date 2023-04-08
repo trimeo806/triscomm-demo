@@ -57,7 +57,7 @@ function HomePage() {
       component: <SentRequests />,
     },
     {
-      value: "request",
+      value: "received_request",
       icon: <ContactMailIcon sx={{ fontSize: 24 }} />,
       component: <FriendRequests />,
     },

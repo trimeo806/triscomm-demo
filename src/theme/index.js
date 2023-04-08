@@ -55,6 +55,7 @@ const GREY = {
 function ThemeProvider({ children }) {
   const themeOptions = {
     palette: {
+      mode: "dark",
       primary: PRIMARY,
       secondary: SECONDARY,
       success: SUCCESS,
@@ -77,11 +78,20 @@ function ThemeProvider({ children }) {
   // Customize cac components thong qua function duoi day
   theme.components = customizeComponents(theme);
 
+  const darkTheme = createTheme({
+    palette: {
+      mode: "dark",
+    },
+  });
+
   return (
-    <MUIThemeProvider theme={theme}>
-      <CssBaseline></CssBaseline>
-      {children}
-    </MUIThemeProvider>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <MUIThemeProvider theme={theme}>
+        <CssBaseline></CssBaseline>
+        {children}
+      </MUIThemeProvider>{" "}
+    </ThemeProvider>
   );
 }
 
